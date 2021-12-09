@@ -16,5 +16,5 @@ class CourseInfoSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         student = self.request.user
-        queryset = Course.objects.all().filter(student=student)
+        queryset = Course.objects.filter(student=student)
         return queryset
