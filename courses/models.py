@@ -15,38 +15,7 @@ class TimeStampedMixin(models.Model):
         abstract = True
 
 
-class UUIDMixin(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-    class Meta:
-        abstract = True
-
-
-class CourseScore(UUIDMixin, models.Model):
-    """Модель таблицы содержащую поставленную оценку курса"""
-    student = models.ForeignKey(User,
-                                on_delete=models.DO_NOTHING,
-                                related_name=_('rated'),
-                                verbose_name=_('student'))
-    course = models.ForeignKey('Course', on_delete=models.CASCADE,
-                               related_name='scores',
-                               verbose_name=_('course'))
-    score = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
-        verbose_name='Оценка')
-
-    class Meta:
-        verbose_name = _('score')
-        verbose_name_plural = _('scores')
-
-    def __str__(self):
-        return f'{self.__class__.__name__}(' \
-               f'student={self.student},' \
-               f'course={self.course},' \
-               f'score={self.score})'
-
-
-class Course(UUIDMixin, TimeStampedMixin, models.Model):
+class Course(TimeStampedMixin, models.Model):
     """Модель существующих курсов."""
     title = models.CharField(verbose_name=_('title'),
                              max_length=150,
@@ -71,7 +40,7 @@ class Course(UUIDMixin, TimeStampedMixin, models.Model):
                f'description={self.description})'
 
 
-class PdfFile(UUIDMixin, TimeStampedMixin, models.Model):
+class PdfFile(TimeStampedMixin, models.Model):
     """класс для указания к какому курсу должны привязываться пдф файлы"""
     file_name = models.CharField(max_length=255,
                                  blank=False,
@@ -96,7 +65,7 @@ class PdfFile(UUIDMixin, TimeStampedMixin, models.Model):
                f'file_path={self.file_path})'
 
 
-class TextInformation(UUIDMixin, TimeStampedMixin, models.Model):
+class TextInformation(TimeStampedMixin, models.Model):
     """класс для описании модели текстовой информации к курсу"""
     title = models.CharField(verbose_name=_('title'),
                              max_length=150,
@@ -117,8 +86,8 @@ class TextInformation(UUIDMixin, TimeStampedMixin, models.Model):
                f'text={self.text[20:]})'
 
 
-class Link(UUIDMixin, TimeStampedMixin, models.Model):
-    """класс для описании модели ссылок к курсу"""
+class Link(TimeStampedMixin, models.Model):
+    """Модель описания таблицы ссылок к курсу"""
     title = models.CharField(verbose_name=_('title'),
                              max_length=150,
                              blank=False,
@@ -138,8 +107,8 @@ class Link(UUIDMixin, TimeStampedMixin, models.Model):
                f'link_text={self.link_text})'
 
 
-class CourseScore(UUIDMixin, models.Model):
-    """Модель таблицы содержащую поставленную оценку курса"""
+class CourseScore(models.Model):
+    """Модель таблицы содержащая поставленную оценку курса"""
     student = models.ForeignKey(User,
                                 on_delete=models.DO_NOTHING,
                                 related_name=_('rated'),
@@ -162,7 +131,7 @@ class CourseScore(UUIDMixin, models.Model):
                f'score={self.score})'
 
 
-class CourseUsers(UUIDMixin, TimeStampedMixin, models.Model):
+class CourseUsers(TimeStampedMixin, models.Model):
     """Модель таблицы описывающая связь пользователей и курсов"""
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE,
                                   related_name='subscription')
