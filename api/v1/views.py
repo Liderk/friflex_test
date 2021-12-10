@@ -75,7 +75,13 @@ class CourseSubscribeSet(viewsets.ModelViewSet):
 
 class CourseScoreSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """Выставление оценки к курсу."""
+
+    serializer_class = SubscribeSerializer
+
     def get_queryset(self):
-        student = self.request.user
-        queryset = CourseUsers.objects.filter(student=student)
+        queryset = get_object_or_404(Course, pk=self.kwargs.get('course_id'))
         return queryset
+
+    def perform_create(self, serializer):
+        course = get_object_or_404(Course, pk=self.kwargs.get('course_id'))
+        serializer.save(student=self.request.user, course=course)

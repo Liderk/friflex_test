@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from courses.models import PdfFile, TextInformation, Link, Course, CourseUsers
+from courses.models import PdfFile, TextInformation, Link, Course, CourseUsers, \
+    CourseScore
 
 User = get_user_model()
 
@@ -55,4 +56,23 @@ class SubscribeSerializer(serializers.ModelSerializer):
         course = self.context.get('course')
         if CourseUsers.objects.filter(student=student, course=course).exists():
             raise serializers.ValidationError('subscriptions already created')
+        return data
+
+
+class CourseScoreSerializer(serializers.ModelSerializer):
+    course = serializers.PrimaryKeyRelatedField(read_only=True)
+    student = serializers.PrimaryKeyRelatedField(read_only=True)
+    score = serializers.IntegerField()
+
+    class Meta:
+        fields = '__all__'
+        model = CourseScore
+
+    def validate(self, data):
+        super().validate(data)
+        student = self.context.get('student')
+        course = self.context.get('course')
+        if CourseScore.objects.filter(student=student, course=course).exists():
+            raise serializers.ValidationError('the assessment has already'
+                                              ' been made')
         return data
