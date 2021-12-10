@@ -132,11 +132,11 @@ class CourseScore(models.Model):
 
 
 class CourseUsers(TimeStampedMixin, models.Model):
-    """Модель таблицы описывающая связь пользователей и курсов"""
-    course_id = models.ForeignKey(Course, on_delete=models.CASCADE,
-                                  related_name='subscription')
-    student_id = models.ForeignKey(User, on_delete=models.CASCADE,
-                                   related_name='student')
+    """Модель таблицы содержащих подписанных на курс студентов"""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,
+                               related_name='subscription')
+    student = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='student')
 
     class Meta:
         verbose_name = _('course student')

@@ -48,7 +48,7 @@ class LinkAdmin(admin.ModelAdmin):
 
 @admin.register(CourseUsers)
 class CourseUsersAdmin(admin.ModelAdmin):
-    list_display = ('course_id', 'student_id', 'created')
+    list_display = ('course', 'student', 'created')
 
 
 @admin.register(CourseScore)
