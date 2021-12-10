@@ -29,10 +29,8 @@ class Course(TimeStampedMixin, models.Model):
 
     @property
     def avg_score(self):
-        return self.scores.all().aggregate(Avg('score')).get('score__avg', 0.00)
-    # avg_score = models.FloatField(blank=False,
-    #                               null=False,
-    #                               default=0)
+        course_scores = self.scores.all().aggregate(Avg('score')).get('score__avg')
+        return course_scores if course_scores else 0.00
 
     class Meta:
         verbose_name = _('Course')
