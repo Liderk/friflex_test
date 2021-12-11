@@ -76,7 +76,12 @@ class CourseSubscribeSet(viewsets.ModelViewSet):
 
 
 class CourseScoreSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    """Выставление оценки к курсу."""
+    """Выставление оценки к курсу.
+    api_v1/courses/{course_id}/score/ [POST] - создать оценку для курса
+    {
+    score: int(1-5);
+    }
+    """
 
     serializer_class = SubscribeSerializer
     permission_classes = (permissions.IsAuthenticated,)
