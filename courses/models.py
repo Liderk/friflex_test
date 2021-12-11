@@ -10,7 +10,8 @@ User = get_user_model()
 
 
 class TimeStampedMixin(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True,
+                                   verbose_name=_('created'))
 
     class Meta:
         abstract = True
@@ -22,24 +23,22 @@ class Course(TimeStampedMixin, models.Model):
                              max_length=150,
                              blank=False,
                              null=False)
-    description = models.CharField(_('description'),
+    description = models.CharField(verbose_name=_('description'),
                                    max_length=500,
                                    blank=True)
     student = models.ManyToManyField(User, through='CourseUsers')
 
     @property
     def avg_score(self):
-        course_scores = self.scores.all().aggregate(Avg('score')).get('score__avg')
-        return course_scores if course_scores else 0.00
+        scores = self.scores.all().aggregate(Avg('score')).get('score__avg')
+        return scores if scores else 0.00
 
     class Meta:
         verbose_name = _('Course')
         verbose_name_plural = _('Courses')
 
     def __str__(self):
-        return f'{self.__class__.__name__}(' \
-               f'title={self.title},' \
-               f'description={self.description})'
+        return self.title
 
 
 class PdfFile(TimeStampedMixin, models.Model):
@@ -49,43 +48,41 @@ class PdfFile(TimeStampedMixin, models.Model):
                                  null=False,
                                  verbose_name=_('file_name'))
 
-    file_path = models.FileField(_('file'),
+    file_path = models.FileField(verbose_name=_('file'),
                                  blank=False,
                                  null=False,
                                  upload_to='course_files/')
     course = models.ForeignKey(Course,
                                on_delete=models.CASCADE,
-                               related_name=_('pdf'))
+                               related_name=_('pdf'),
+                               verbose_name=_('course'))
 
     class Meta:
         verbose_name = _('pdf')
         verbose_name_plural = _('pdfs')
 
     def __str__(self):
-        return f'{self.__class__.__name__}(' \
-               f'file_name={self.file_name},' \
-               f'file_path={self.file_path})'
+        return self.file_name
 
 
 class TextInformation(TimeStampedMixin, models.Model):
-    """класс для описании модели текстовой информации к курсу"""
+    """Класс для описания модели текстовой информации к курсу"""
     title = models.CharField(verbose_name=_('title'),
                              max_length=150,
                              blank=False,
                              null=False)
-    text = models.TextField(_('text'))
+    text = models.TextField(verbose_name=_('text'))
     course = models.ForeignKey(Course,
                                on_delete=models.CASCADE,
-                               related_name=_('text'))
+                               related_name='text',
+                               verbose_name=_('course'))
 
     class Meta:
         verbose_name = _('text')
         verbose_name_plural = _('texts')
 
     def __str__(self):
-        return f'{self.__class__.__name__}(' \
-               f'title={self.title},' \
-               f'text={self.text[20:]})'
+        return self.title
 
 
 class Link(TimeStampedMixin, models.Model):
@@ -97,30 +94,29 @@ class Link(TimeStampedMixin, models.Model):
     link_text = models.URLField(_('link'), max_length=200)
     course = models.ForeignKey(Course,
                                on_delete=models.CASCADE,
-                               related_name=_('link'))
+                               related_name='link',
+                               verbose_name=_('course'))
 
     class Meta:
         verbose_name = _('link')
         verbose_name_plural = _('links')
 
     def __str__(self):
-        return f'{self.__class__.__name__}(' \
-               f'title={self.title},' \
-               f'link_text={self.link_text})'
+        return self.title
 
 
 class CourseScore(models.Model):
     """Модель таблицы содержащая поставленную оценку курса"""
     student = models.ForeignKey(User,
                                 on_delete=models.DO_NOTHING,
-                                related_name=_('rated'),
+                                related_name='rated',
                                 verbose_name=_('student'))
     course = models.ForeignKey('Course', on_delete=models.CASCADE,
                                related_name='scores',
                                verbose_name=_('course'))
     score = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)],
-        verbose_name='Оценка')
+        verbose_name=_('score'))
 
     class Meta:
         verbose_name = _('score')
@@ -136,10 +132,17 @@ class CourseScore(models.Model):
 class CourseUsers(TimeStampedMixin, models.Model):
     """Модель таблицы содержащих подписанных на курс студентов"""
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
-                               related_name='subscription')
+                               related_name='subscription',
+                               verbose_name=_('course'))
     student = models.ForeignKey(User, on_delete=models.CASCADE,
-                                related_name='student')
+                                related_name='student',
+                                verbose_name=_('student'))
 
     class Meta:
         verbose_name = _('course student')
         verbose_name_plural = _('course student')
+
+    def __str__(self):
+        return f'{self.__class__.__name__}(' \
+               f'student={self.student},' \
+               f'course={self.course},'

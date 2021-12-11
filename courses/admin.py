@@ -6,18 +6,22 @@ from courses.models import Course, PdfFile, TextInformation, Link, User, \
 
 class CourseUsersInline(admin.TabularInline):
     model = CourseUsers
+    extra = 0
 
 
 class CoursePdfsInline(admin.TabularInline):
     model = PdfFile
+    extra = 0
 
 
 class CourseLinksInline(admin.TabularInline):
     model = Link
+    extra = 0
 
 
 class CourseTextsInline(admin.TabularInline):
     model = TextInformation
+    extra = 0
 
 
 @admin.register(Course)

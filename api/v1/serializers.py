@@ -26,7 +26,6 @@ class LinkSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-
     class Meta:
         fields = ('title', 'description', 'avg_score')
         model = Course
@@ -62,7 +61,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
 class CourseScoreSerializer(serializers.ModelSerializer):
     course = serializers.PrimaryKeyRelatedField(read_only=True)
     student = serializers.PrimaryKeyRelatedField(read_only=True)
-    score = serializers.IntegerField()
 
     class Meta:
         fields = '__all__'

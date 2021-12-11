@@ -8,12 +8,13 @@ from .views import CourseInfoSet, CourseSubscribeSet, CourseMaterials, \
 router = DefaultRouter()
 
 router.register(r'courses/materials', CourseMaterials, basename='materials')
+
 router.register(r'courses/subscribe', CourseSubscribeSet, basename='subscribe')
+
+router.register(r'courses', CourseInfoSet, basename='courses')
 router.register(r'courses/(?P<course_id>\d+)/score',
                 CourseScoreSet,
                 basename='score')
-router.register(r'courses', CourseInfoSet, basename='courses')
-
 
 urlpatterns = [
     path('', include(router.urls)),

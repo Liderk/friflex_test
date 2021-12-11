@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions, viewsets, status
 
 from api.v1.serializers import CourseSerializer, SubscribeSerializer, \
-    CourseMaterialsSerializer
+    CourseMaterialsSerializer, CourseScoreSerializer
 from courses.models import Course, CourseUsers
 from rest_framework.response import Response
 
@@ -61,7 +61,6 @@ class CourseSubscribeSet(viewsets.ModelViewSet):
         })
         serializer.is_valid(raise_exception=True)
         serializer.save(student=self.request.user, course=course)
-        return Response({'success': True}, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs['pk'])
@@ -79,9 +78,15 @@ class CourseScoreSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = SubscribeSerializer
 
     def get_queryset(self):
+        print(self.kwargs.get('course_id'))
         queryset = get_object_or_404(Course, pk=self.kwargs.get('course_id'))
         return queryset
 
     def perform_create(self, serializer):
         course = get_object_or_404(Course, pk=self.kwargs.get('course_id'))
+        serializer = CourseScoreSerializer(data=self.request.data, context={
+            'student': self.request.user,
+            'course': course
+        })
+        serializer.is_valid(raise_exception=True)
         serializer.save(student=self.request.user, course=course)
