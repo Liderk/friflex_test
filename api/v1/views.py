@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, permissions, viewsets, status
+from rest_framework import mixins, permissions, viewsets
 
 from api.v1.serializers import CourseSerializer, SubscribeSerializer, \
     CourseMaterialsSerializer, CourseScoreSerializer
@@ -18,6 +18,7 @@ class CourseInfoSet(mixins.ListModelMixin,
     если человек подписан на него
     """
     serializer_class = CourseSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         student = self.request.user
@@ -30,6 +31,7 @@ class CourseMaterials(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     api_v1/courses/materials/{id}/ [GET]
     """
     serializer_class = CourseMaterialsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         student = self.request.user
@@ -47,6 +49,7 @@ class CourseSubscribeSet(viewsets.ModelViewSet):
         api_v1/courses/subscribe/ [DELETE] - подписаться на курс
     """
     serializer_class = SubscribeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         student = self.request.user
@@ -76,6 +79,7 @@ class CourseScoreSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """Выставление оценки к курсу."""
 
     serializer_class = SubscribeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         print(self.kwargs.get('course_id'))

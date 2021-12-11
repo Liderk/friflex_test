@@ -1,5 +1,4 @@
 from django.urls import include, path
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.routers import DefaultRouter
 
 from .views import CourseInfoSet, CourseSubscribeSet, CourseMaterials, \
@@ -17,5 +16,7 @@ router.register(r'courses/(?P<course_id>\d+)/score',
                 basename='score')
 
 urlpatterns = [
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
     path('', include(router.urls)),
 ]

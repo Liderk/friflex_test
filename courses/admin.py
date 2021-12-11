@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from courses.models import Course, PdfFile, TextInformation, Link, User, \
+from courses.models import Course, PdfFile, TextInformation, Link, \
     CourseUsers, CourseScore
 
 
